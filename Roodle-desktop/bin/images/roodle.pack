@@ -1,0 +1,79 @@
+
+roodle.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+background
+  rotate: false
+  xy: 1, 53
+  size: 540, 960
+  orig: 540, 960
+  offset: 0, 0
+  index: -1
+btn_down
+  rotate: false
+  xy: 543, 913
+  size: 400, 100
+  split: 41, 44, 14, 10
+  pad: 18, 0, 14, 10
+  orig: 400, 100
+  offset: 0, 0
+  index: -1
+btn_up
+  rotate: false
+  xy: 543, 811
+  size: 400, 100
+  split: 27, 29, 13, 12
+  pad: 27, 29, -1, -1
+  orig: 400, 100
+  offset: 0, 0
+  index: -1
+blockade
+  rotate: false
+  xy: 543, 609
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+heart
+  rotate: false
+  xy: 543, 407
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+ic_launcher
+  rotate: false
+  xy: 543, 205
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+roodle
+  rotate: false
+  xy: 543, 205
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+obstacle
+  rotate: false
+  xy: 745, 609
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+star
+  rotate: false
+  xy: 745, 407
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+bullet
+  rotate: false
+  xy: 1, 1
+  size: 25, 50
+  orig: 25, 50
+  offset: 0, 0
+  index: -1
