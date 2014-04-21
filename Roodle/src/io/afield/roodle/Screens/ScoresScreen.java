@@ -15,22 +15,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonValue.JsonIterator;
 
 public class ScoresScreen extends AbstractGameScreen implements HttpResponseListener {
 	
@@ -49,6 +43,7 @@ public class ScoresScreen extends AbstractGameScreen implements HttpResponseList
 	//http stuff
 	public JsonValue root;
 	public String data;
+	public String text;
 	
 	private TextButton btnBack;
 	private TextButtonStyle btnStyle;
@@ -70,18 +65,15 @@ public class ScoresScreen extends AbstractGameScreen implements HttpResponseList
 	private void rebuildStage(){
 		type = Assets.instance.fonts.type;
 		
-		getScores();
+	
 		
 		
 		btnStyle = new TextButtonStyle(drawableUp, drawableDown, null, theFont);
 		btnStyle.font = Assets.instance.fonts.theFont;
 		btnStyle.up = skin.getDrawable("btn_up");
 		btnStyle.down = skin.getDrawable("btn_down");
-//		btnStyle.font.setScale(1, -1);
-
 
 		ls = new LabelStyle(type, Color.BLACK);
-		//ls.font.setScale(1, -1);
 		
 		Table layerScores = buildScoreLayer();
 		Table layerBack = buildBackLayer();
@@ -125,64 +117,115 @@ public class ScoresScreen extends AbstractGameScreen implements HttpResponseList
 		layer.top();
 		
 		getScores();
-		
 
-		
-		
-		
-		
-		
-		
-		
 		return layer;
 		
 	}
 	
+
 	
-	private JsonValue getScores(){
+	/*
+	 * 
+	 * This section below controls the server aspects...there are two getScore() Functions. It is currently
+	 * set up so that it will work when using the Desktop version but I have been unable to test it properly
+	 * on android. For more information please see the docs.
+	 * 
+	 * 
+	 */
+	
+	
+	
+//	private void getScores(){
+//		
+//		Score score = new Score();
+//		
+//		ResponseCallback<Score> callback = new ResponseCallback<Score>() {
+//            public void onResponse(Score returnObject) {
+//            	System.out.println("Json ok");
+//            }
+//            public void onFail(JsonClientException exception) {
+//            	System.out.println("Json request failed: " + exception.getMessage());
+//              
+//            }
+//        };
+//        JsonClient.getInstance().sendPost(score, "?page=getScores", callback, Score.class);
+//	}
+//	
+	
+
+	private void getScores(){
 		String url = "http://localhost:8888/?page=getScores";
 		String httpMethod = Net.HttpMethods.GET;
 		httpRequest = new HttpRequest(httpMethod);
 		httpRequest.setHeader("Content-Type", "application/json");
 		httpRequest.setUrl(url);
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
-			
+		Gdx.net.sendHttpRequest(httpRequest, ScoresScreen.this);
+		
+	}
+	
+	@Override
+	public void handleHttpResponse(HttpResponse httpResponse) {
+		
+		final int statusCode = httpResponse.getStatus().getStatusCode();
+		// We are not in main thread right now so we need to post to main thread for ui updates
+		Gdx.app.postRunnable(new Runnable() {
 			@Override
-			public void handleHttpResponse(HttpResponse httpResponse) {
-				
-				data = httpResponse.getResultAsString();
-				root = new JsonReader().parse(data);
-				System.out.println(root.get(1));
-				
-				
-				
-			}
-			
-			@Override
-			public void failed(Throwable t) {
-				System.err.println("something not good: " + t);
-				
-			}
-			
-			@Override
-			public void cancelled() {
-				// TODO Auto-generated method stub
+			public void run () {
+				System.out.println("HTTP Request status: " + statusCode);
 				
 			}
 		});
 		
-		return root;
+		if (statusCode != 200) {
+			Gdx.app.log("NetAPITest", "An error ocurred since statusCode is not OK");
+			setText(httpResponse);
+			return;
+		}
+	}
+	
+	void setText (HttpResponse httpResponse) {
+		final String newText = httpResponse.getResultAsString();
+		Gdx.app.postRunnable(new Runnable() {
+			public void run () {
+				text = newText;
+				System.out.println(text);
+			}
+		});
+	}
+
+
+	@Override
+	public void failed(Throwable t) {
+		System.out.println("Failed to perform the HTTP Request: " + t.getMessage());
+		t.printStackTrace();
 		
 	}
+
+
+	@Override
+	public void cancelled() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	/*
+	 * 
+	 * 		Generic Files for the Scores Screen
+	 * 
+	 * 		Render
+	 * 		Resize
+	 * 		Show
+	 * 		Hide
+	 * 		Pause
+	 * 
+	 */
 
 	@Override
 	public void render(float deltaTime) {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT );
 
-//		if(Gdx.input.isTouched()){
-//			game.setScreen(new GameScreen(game));
-//		}
 
 		if (debugEnabled) {
 			debugRebuildStage -= deltaTime;
@@ -194,7 +237,7 @@ public class ScoresScreen extends AbstractGameScreen implements HttpResponseList
 		stage.act(deltaTime);
 		stage.draw();
 		
-		Table.drawDebug(stage);
+		//Table.drawDebug(stage);
 	}
 
 	@Override
@@ -211,7 +254,6 @@ public class ScoresScreen extends AbstractGameScreen implements HttpResponseList
 		skin = new Skin();
 		atlas = new TextureAtlas(Constants.TEXTURE_ATLAS_OBJECTS);
 		skin.addRegions(atlas);
-
 		
 		rebuildStage();
 	}
@@ -224,31 +266,11 @@ public class ScoresScreen extends AbstractGameScreen implements HttpResponseList
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 
 	}
 
 
-	@Override
-	public void handleHttpResponse(HttpResponse httpResponse) {
-		final int statusCode = httpResponse.getStatus().getStatusCode();
+	
 
-		System.out.println("http respons code: " + statusCode);
-
-	}
-
-
-	@Override
-	public void failed(Throwable t) {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	@Override
-	public void cancelled() {
-		// TODO Auto-generated method stub
-
-	}
 
 }

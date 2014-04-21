@@ -66,10 +66,10 @@ public class EndScreen extends AbstractGameScreen implements HttpResponseListene
 
 	private HttpRequest httpRequest;
 
-	public EndScreen(Game game, int score, String user) {
+	public EndScreen(Game game, int score) {
 		super(game);
 		this.score = score;
-		this.user = user;
+		
 		// TODO Auto-generated constructor stub
 	}
 
@@ -155,7 +155,7 @@ public class EndScreen extends AbstractGameScreen implements HttpResponseListene
 				//System.err.println("This is going to be tough, " + "i dont know what I am doing here");
 				int playerScore = score;
 				String userName = user; 
-				String url = "http://192.168.0.19:8888/?page=insertScore&score=" + playerScore + "&user=" + userName;
+				String url = "http://localhost:8888/?page=insertScore&score=" + playerScore + "&user=" + userName;
 				String httpMethod = Net.HttpMethods.GET;
 				httpRequest = new HttpRequest(httpMethod);
 				httpRequest.setUrl(url);
@@ -164,7 +164,8 @@ public class EndScreen extends AbstractGameScreen implements HttpResponseListene
 
 					@Override
 					public void handleHttpResponse(HttpResponse httpResponse) {
-						System.out.println("Posted information to the server");
+						String data = httpResponse.getResultAsString();
+						System.out.println("Data is " + data);
 						game.setScreen(new MenuScreen(game));
 					}
 

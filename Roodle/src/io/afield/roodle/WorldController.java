@@ -210,16 +210,19 @@ public class WorldController extends InputAdapter implements HttpResponseListene
 	private boolean isGameOver(){
 		if(lives < 1){
 
-			//sendScore();
+			sendScore();
 
 			return true;
 		}
 		return false;
 	}
 
-
+//	 Sends the user to the end screen sending the score and the user
+//	The user is not currently active but could be included
+	
+	
 	private void EndMenu() {
-		game.setScreen(new EndScreen(game, rP.getScore(), stringUser));
+		game.setScreen(new EndScreen(game, rP.getScore()));
 
 	}
 
@@ -228,7 +231,7 @@ public class WorldController extends InputAdapter implements HttpResponseListene
 		stringScore = Integer.toString(rP.getScore());
 		stringUser = "AdamTest";
 
-		url = "http://192.168.0.19/?page=insertScore&score="+stringScore+"&user="+stringUser;
+		url = "http://192.168.0.19:8888/?page=insertScore&score="+stringScore+"&user="+stringUser;
 
 		httpMethod = Net.HttpMethods.GET;
 
