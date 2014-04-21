@@ -26,7 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.JsonValue;
 
-public class ScoresScreen extends AbstractGameScreen implements HttpResponseListener {
+public class ScoresScreen extends AbstractGameScreen {
 	
 	private Skin skin;
 	private TextureAtlas atlas;
@@ -159,52 +159,35 @@ public class ScoresScreen extends AbstractGameScreen implements HttpResponseList
 		httpRequest = new HttpRequest(httpMethod);
 		httpRequest.setHeader("Content-Type", "application/json");
 		httpRequest.setUrl(url);
-		Gdx.net.sendHttpRequest(httpRequest, ScoresScreen.this);
-		
-	}
-	
-	@Override
-	public void handleHttpResponse(HttpResponse httpResponse) {
-		
-		final int statusCode = httpResponse.getStatus().getStatusCode();
-		// We are not in main thread right now so we need to post to main thread for ui updates
-		Gdx.app.postRunnable(new Runnable() {
+		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+			
 			@Override
-			public void run () {
-				System.out.println("HTTP Request status: " + statusCode);
+			public void handleHttpResponse(final HttpResponse httpResponse) {
+				final int statusCode = httpResponse.getStatus().getStatusCode();
+				// We are not in main thread right now so we need to post to main thread for ui updates
+				Gdx.app.postRunnable(new Runnable() {
+					@Override
+					public void run () {
+						System.out.println("HTTP Request status: " + statusCode);
+						text = httpResponse.getResultAsString();
+						System.out.println(text);
+						
+					}
+				});
+			}
+			
+			@Override
+			public void failed(Throwable t) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void cancelled() {
+				// TODO Auto-generated method stub
 				
 			}
 		});
-		
-		if (statusCode != 200) {
-			Gdx.app.log("NetAPITest", "An error ocurred since statusCode is not OK");
-			setText(httpResponse);
-			return;
-		}
-	}
-	
-	void setText (HttpResponse httpResponse) {
-		final String newText = httpResponse.getResultAsString();
-		Gdx.app.postRunnable(new Runnable() {
-			public void run () {
-				text = newText;
-				System.out.println(text);
-			}
-		});
-	}
-
-
-	@Override
-	public void failed(Throwable t) {
-		System.out.println("Failed to perform the HTTP Request: " + t.getMessage());
-		t.printStackTrace();
-		
-	}
-
-
-	@Override
-	public void cancelled() {
-		// TODO Auto-generated method stub
 		
 	}
 	

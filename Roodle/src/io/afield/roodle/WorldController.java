@@ -35,7 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.utils.Array;
 
-public class WorldController extends InputAdapter implements HttpResponseListener{
+public class WorldController extends InputAdapter{
 	private static final String TAG = WorldController.class.getName();
 
 	public int gameSpeed;
@@ -210,7 +210,7 @@ public class WorldController extends InputAdapter implements HttpResponseListene
 	private boolean isGameOver(){
 		if(lives < 1){
 
-			sendScore();
+			//sendScore();
 
 			return true;
 		}
@@ -225,46 +225,62 @@ public class WorldController extends InputAdapter implements HttpResponseListene
 		game.setScreen(new EndScreen(game, rP.getScore()));
 
 	}
+	
+	/*
+	 * Practicing the http transfer from here initially...this seemed to work but I wanted to
+	 * send it on the press of the submit. This way it would also allow a text input to send
+	 * the users name. I tried the screne2d textfield widgets but failed to get them working
+	 * properly. 
+	 * 
+	 * 
+	 * NEED TO IMPLEMENT HttpResponseListener to get this working.
+	 * 
+	 */
 
-	private void sendScore(){
-		
-		stringScore = Integer.toString(rP.getScore());
-		stringUser = "AdamTest";
-
-		url = "http://192.168.0.19:8888/?page=insertScore&score="+stringScore+"&user="+stringUser;
-
-		httpMethod = Net.HttpMethods.GET;
-
-		httpRequest = new HttpRequest(httpMethod);
-		httpRequest.setUrl(url);
-		httpRequest.setContent(stringScore);
-		httpRequest.setContent(requestContent);
-		Gdx.net.sendHttpRequest(httpRequest, WorldController.this);
-	}
-
-	@Override
-	public void handleHttpResponse(HttpResponse httpResponse) {
-		
-		final int statusCode = httpResponse.getStatus().getStatusCode();
-		
-		System.out.println("http respons code: " + statusCode);
-		if (statusCode != 200) {
-			game.setScreen(new MenuScreen(game));
-		}
-		
-	}
-
-	@Override
-	public void failed(Throwable t) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void cancelled() {
-		// TODO Auto-generated method stub
-
-	}
+//	private void sendScore(){
+//		
+//		stringScore = Integer.toString(rP.getScore());
+//		stringUser = "AdamTest";
+//
+//		url = "http://localhost:8888/?page=insertScore&score="+stringScore+"&user="+stringUser;
+//		
+//
+//		httpMethod = Net.HttpMethods.GET;
+//
+//		httpRequest = new HttpRequest(httpMethod);
+//		httpRequest.setUrl(url);
+//		httpRequest.setContent(stringScore);
+//		httpRequest.setContent(requestContent);
+//		
+//		System.out.println(httpRequest.getContent());
+//		
+//		
+//		Gdx.net.sendHttpRequest(httpRequest, WorldController.this);
+//	}
+//
+//	@Override
+//	public void handleHttpResponse(HttpResponse httpResponse) {
+//		
+//		final int statusCode = httpResponse.getStatus().getStatusCode();
+//		
+//		System.out.println("http respons code: " + statusCode);
+//		if (statusCode != 200) {
+//			game.setScreen(new EndScreen(game, rP.getScore()));
+//		}
+//		
+//	}
+//
+//	@Override
+//	public void failed(Throwable t) {
+//		// TODO Auto-generated method stub
+//
+//	}
+//
+//	@Override
+//	public void cancelled() {
+//		// TODO Auto-generated method stub
+//
+//	}
 
 
 
