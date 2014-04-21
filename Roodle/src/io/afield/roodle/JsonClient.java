@@ -21,12 +21,11 @@ public class JsonClient {
 		return instance;
 	}
 	
-	public <T> void sendPost(Object requestObject, String uri, final ResponseCallback<Score> callback, final Class<Score> class1) {
-       
-		String GET = new String();
-		GET = "GET";
+	public <T> void sendPost(Object requestObject, String uri, final ResponseCallback<T> callback, final Class<T> clazz) {
 		
-		sendRequest(requestObject, uri, GET, callback, class1);
+		String GET = "GET";
+		
+		sendRequest(requestObject, uri, GET , callback, clazz);
     }
     private <T> void sendRequest(Object requestObject, String uri, String method, final ResponseCallback<T> callback, final Class<T> clazz) {
 

@@ -1,0 +1,40 @@
+
+roodle-ui.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+background
+  rotate: false
+  xy: 1, 1
+  size: 540, 960
+  orig: 540, 960
+  offset: 0, 0
+  index: -1
+theFont
+  rotate: false
+  xy: 543, 449
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+type
+  rotate: false
+  xy: 1057, 449
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+buttonDown
+  rotate: false
+  xy: 543, 347
+  size: 400, 100
+  orig: 400, 100
+  offset: 0, 0
+  index: -1
+buttonUp
+  rotate: false
+  xy: 1571, 861
+  size: 400, 100
+  orig: 400, 100
+  offset: 0, 0
+  index: -1

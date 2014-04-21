@@ -1,6 +1,10 @@
 package io.afield.roodle.Screens;
 
 import io.afield.roodle.Constants;
+import io.afield.roodle.JsonClient;
+import io.afield.roodle.JsonClient.ResponseCallback;
+import io.afield.roodle.JsonClientException;
+import io.afield.roodle.Score;
 import io.afield.roodle.Assets.Assets;
 
 import com.badlogic.gdx.Game;
@@ -116,7 +120,7 @@ public class ScoresScreen extends AbstractGameScreen {
 		Table layer = new Table();
 		layer.top();
 		
-		getScores();
+		getScores1();
 
 		return layer;
 		
@@ -135,22 +139,22 @@ public class ScoresScreen extends AbstractGameScreen {
 	
 	
 	
-//	private void getScores(){
-//		
-//		Score score = new Score();
-//		
-//		ResponseCallback<Score> callback = new ResponseCallback<Score>() {
-//            public void onResponse(Score returnObject) {
-//            	System.out.println("Json ok");
-//            }
-//            public void onFail(JsonClientException exception) {
-//            	System.out.println("Json request failed: " + exception.getMessage());
-//              
-//            }
-//        };
-//        JsonClient.getInstance().sendPost(score, "?page=getScores", callback, Score.class);
-//	}
-//	
+	private void getScores1(){
+		
+		Score score = new Score();
+		
+		ResponseCallback<Score> callback = new ResponseCallback<Score>() {
+            public void onResponse(Score returnObject) {
+            	System.out.println("Json ok");
+            }
+            public void onFail(JsonClientException exception) {
+            	System.out.println("Json request failed: " + exception.getMessage());
+              
+            }
+        };
+        JsonClient.getInstance().sendPost(score, "?page=getScores", callback, Score.class);
+	}
+	
 	
 
 	private void getScores(){
@@ -169,9 +173,7 @@ public class ScoresScreen extends AbstractGameScreen {
 					@Override
 					public void run () {
 						System.out.println("HTTP Request status: " + statusCode);
-						text = httpResponse.getResultAsString();
-						System.out.println(text);
-						
+						System.err.println(httpResponse.getResultAsString());						
 					}
 				});
 			}
@@ -239,6 +241,9 @@ public class ScoresScreen extends AbstractGameScreen {
 		skin.addRegions(atlas);
 		
 		rebuildStage();
+		
+		//getScores();
+		getScores1();
 	}
 
 	@Override
