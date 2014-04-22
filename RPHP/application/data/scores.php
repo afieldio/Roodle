@@ -8,8 +8,10 @@ function getScores($link){
 	while ($record = mysqli_fetch_assoc($results)) {
 		array_push($scores, $record);
 	}
-
+	
 	return json_encode($scores);
+
+
 }
 
 function insertScore($link, $score, $user){
@@ -17,4 +19,5 @@ function insertScore($link, $score, $user){
 
 	$results = mysqli_query($link, "insert into Scores(score, user) VALUES ('$score', '$user')");
 
+	return $results;
 }
