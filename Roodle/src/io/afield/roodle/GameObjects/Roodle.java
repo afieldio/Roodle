@@ -1,6 +1,5 @@
 package io.afield.roodle.GameObjects;
 
-import io.afield.roodle.Constants;
 import io.afield.roodle.Assets.Assets;
 
 import com.badlogic.gdx.Gdx;
@@ -11,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Roodle extends AbstractGameObject {
 
 	private TextureRegion roodleRegion;
-	private int score;
+	private int score;	
 	//private int lives;
 
 	public Roodle(){
@@ -44,7 +43,7 @@ public class Roodle extends AbstractGameObject {
 	}
 	
 	private void checkBounds() {
-		if(bounds.x < -Constants.VIEWPORT_WIDTH && bounds.x > Constants.VIEWPORT_WIDTH){
+		if(bounds.x < -Gdx.graphics.getWidth() || bounds.x > Gdx.graphics.getWidth()){
 			velocity.x = 0;
 		}
 		

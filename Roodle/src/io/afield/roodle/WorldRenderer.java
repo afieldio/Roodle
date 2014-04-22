@@ -1,7 +1,6 @@
 package io.afield.roodle;
 
 import io.afield.roodle.Assets.Assets;
-import io.afield.roodle.GameObjects.Heart;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -44,10 +43,28 @@ public class WorldRenderer implements Disposable{
 		renderStars(batch);
 		renderObstacles(batch);
 		
+		renderBullets(batch);
+		
 		renderRoodle(batch);
 		renderGui(batch);
 		
 
+	}
+	
+	private void renderBullets(SpriteBatch batch){
+		wc.cameraHelper.applyTo(camera);
+		batch.setProjectionMatrix(camera.combined);
+		
+		batch.begin();
+		for(int i=0; i<wc.bullets.size; i++){
+			if(wc.bullets.get(i).position.y < Constants.VIEWPORT_HEIGHT){
+				wc.bullets.get(i).render(batch);
+			}else if(wc.bullets.get(i).position.y > Constants.VIEWPORT_HEIGHT){
+				wc.bullets.removeIndex(i);
+			}
+		}
+		
+		batch.end();
 	}
 	
 	private void renderRoodle(SpriteBatch batch){

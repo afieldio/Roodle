@@ -3,6 +3,7 @@ package io.afield.roodle;
 import io.afield.roodle.Assets.Assets;
 import io.afield.roodle.GameObjects.AbstractGameObject;
 import io.afield.roodle.GameObjects.Background;
+import io.afield.roodle.GameObjects.Bullet;
 import io.afield.roodle.GameObjects.Heart;
 import io.afield.roodle.GameObjects.Obstacle;
 import io.afield.roodle.GameObjects.Roodle;
@@ -63,6 +64,9 @@ public class WorldController extends InputAdapter{
 	public Array<Obstacle> obsts;
 	public Obstacle obst;
 
+	public Array<Bullet> bullets;
+	public Bullet b;
+
 
 	//Gui Stuff
 	public TextButton leftBtn, fireBtn, rightBtn;
@@ -106,6 +110,7 @@ public class WorldController extends InputAdapter{
 		hearts = new Array<Heart>();
 		stars = new Array<Star>();
 		obsts = new Array<Obstacle>();
+		bullets = new Array<Bullet>();
 
 
 		/*
@@ -166,6 +171,8 @@ public class WorldController extends InputAdapter{
 		handleRoodle(deltaTime);
 		scroll(deltaTime);
 		testCollisions();
+		bulletCollisions();
+		handleBullets(deltaTime);
 
 		handleTimer(deltaTime);
 		handleHearts(deltaTime);
@@ -198,7 +205,7 @@ public class WorldController extends InputAdapter{
 		if(obstTimer.hasTimeElapsed()){
 			obstTimer.reset();
 		}
-		
+
 		gameTimer.update(deltaTime);
 		if(gameTimer.hasTimeElapsed()){
 			gameTimer.reset();
@@ -217,15 +224,15 @@ public class WorldController extends InputAdapter{
 		return false;
 	}
 
-//	 Sends the user to the end screen sending the score and the user
-//	The user is not currently active but could be included
-	
-	
+	//	 Sends the user to the end screen sending the score and the user
+	//	The user is not currently active but could be included
+
+
 	private void EndMenu() {
 		game.setScreen(new EndScreen(game, rP.getScore()));
 
 	}
-	
+
 	/*
 	 * Practicing the http transfer from here initially...this seemed to work but I wanted to
 	 * send it on the press of the submit. This way it would also allow a text input to send
@@ -237,50 +244,50 @@ public class WorldController extends InputAdapter{
 	 * 
 	 */
 
-//	private void sendScore(){
-//		
-//		stringScore = Integer.toString(rP.getScore());
-//		stringUser = "AdamTest";
-//
-//		url = "http://localhost:8888/?page=insertScore&score="+stringScore+"&user="+stringUser;
-//		
-//
-//		httpMethod = Net.HttpMethods.GET;
-//
-//		httpRequest = new HttpRequest(httpMethod);
-//		httpRequest.setUrl(url);
-//		httpRequest.setContent(stringScore);
-//		httpRequest.setContent(requestContent);
-//		
-//		System.out.println(httpRequest.getContent());
-//		
-//		
-//		Gdx.net.sendHttpRequest(httpRequest, WorldController.this);
-//	}
-//
-//	@Override
-//	public void handleHttpResponse(HttpResponse httpResponse) {
-//		
-//		final int statusCode = httpResponse.getStatus().getStatusCode();
-//		
-//		System.out.println("http respons code: " + statusCode);
-//		if (statusCode != 200) {
-//			game.setScreen(new EndScreen(game, rP.getScore()));
-//		}
-//		
-//	}
-//
-//	@Override
-//	public void failed(Throwable t) {
-//		// TODO Auto-generated method stub
-//
-//	}
-//
-//	@Override
-//	public void cancelled() {
-//		// TODO Auto-generated method stub
-//
-//	}
+	//	private void sendScore(){
+	//		
+	//		stringScore = Integer.toString(rP.getScore());
+	//		stringUser = "AdamTest";
+	//
+	//		url = "http://localhost:8888/?page=insertScore&score="+stringScore+"&user="+stringUser;
+	//		
+	//
+	//		httpMethod = Net.HttpMethods.GET;
+	//
+	//		httpRequest = new HttpRequest(httpMethod);
+	//		httpRequest.setUrl(url);
+	//		httpRequest.setContent(stringScore);
+	//		httpRequest.setContent(requestContent);
+	//		
+	//		System.out.println(httpRequest.getContent());
+	//		
+	//		
+	//		Gdx.net.sendHttpRequest(httpRequest, WorldController.this);
+	//	}
+	//
+	//	@Override
+	//	public void handleHttpResponse(HttpResponse httpResponse) {
+	//		
+	//		final int statusCode = httpResponse.getStatus().getStatusCode();
+	//		
+	//		System.out.println("http respons code: " + statusCode);
+	//		if (statusCode != 200) {
+	//			game.setScreen(new EndScreen(game, rP.getScore()));
+	//		}
+	//		
+	//	}
+	//
+	//	@Override
+	//	public void failed(Throwable t) {
+	//		// TODO Auto-generated method stub
+	//
+	//	}
+	//
+	//	@Override
+	//	public void cancelled() {
+	//		// TODO Auto-generated method stub
+	//
+	//	}
 
 
 
@@ -349,7 +356,33 @@ public class WorldController extends InputAdapter{
 		return pos;
 	}
 
+	public void handleBullets(float deltaTime){
+		for (Bullet b : bullets){
+//			if( b.position.x < Constants.VIEWPORT_HEIGHT){
+//				b.velocity.y += deltaTime*500;
+//				System.out.println(b.velocity.y);
+//			}else if (b.position.x > Constants.VIEWPORT_HEIGHT){
+//				hearts.removeValue(heart, true);
+//			}
+			
+			moveBullet(deltaTime, b);
+		}
+	}
+	
+	private void moveBullet(float deltaTime, Bullet b){
+		b.position.y += 10*deltaTime;
+	}
+	
+	private Bullet addBullet() {
+		
+		Bullet b = new Bullet();
+		b.position.x = rP.position.x;
+		b.position.y = rP.position.y;
 
+		bullets.add(b);
+		return b;
+		
+	}
 
 
 	/*
@@ -435,20 +468,21 @@ public class WorldController extends InputAdapter{
 	/*
 	 * Obstacles
 	 */
-	
+
 	public void handleObstacles(float deltaTime){
-	
+
 		float secs = 0.5f;
-	
+
 		if(obstTimer.remaining <= secs){
 			spawnObstacle();
-			System.err.println("obstacle");
-	
-			float randomFloat = MathUtils.random(1, 1);
-	
+
+			float randomFloat = MathUtils.random(3, 6);
+
 			obstTimer.reset(randomFloat);
 		}
-	
+		
+		
+
 		for(Obstacle obst : obsts){
 			if(obst.position.x > -Constants.VIEWPORT_HEIGHT){
 				obst.velocity.y = deltaTime*-gameSpeed;
@@ -527,6 +561,10 @@ public class WorldController extends InputAdapter{
 		}else{
 			rP.rotation = 0;
 		}
+		
+		if(Gdx.input.isKeyPressed(Keys.SPACE) || Gdx.input.isTouched()){
+			addBullet();
+		}
 
 
 		if(Gdx.app.getType() == ApplicationType.Android ){
@@ -543,9 +581,10 @@ public class WorldController extends InputAdapter{
 		//boolean available = Gdx.input.isPeripheralAvailable(Peripheral.Accelerometer);
 	}
 
+
 	private void checkRoodlePosition(){
 		if(rP.bounds.x > stage.getWidth()){
-
+			System.out.println("OUt of bounds");
 		}
 	}
 
@@ -588,6 +627,28 @@ public class WorldController extends InputAdapter{
 			onCollisionWithObst(obst);
 		}
 	}
+	
+	private void bulletCollisions(){
+		r1 = new Rectangle();
+		r2 = new Rectangle();
+		
+		for( Bullet b : bullets){
+			r1.set(b.position.x, b.position.y, b.bounds.width, b.bounds.height);
+			for(Obstacle obst : obsts){
+				r2.set(obst.position.x, obst.position.y, obst.bounds.width, obst.bounds.height);
+				if(!r1.overlaps(r2))continue;
+				bulletObstCollision(b, obst);
+			}
+		}
+	}
+
+	private void bulletObstCollision(Bullet b2, Obstacle obst2) {
+
+		bullets.removeValue(b2, true);
+		obsts.removeValue(obst2, true);
+		
+		
+	}
 
 	private void onCollisionWithObst(Obstacle obst){
 		obsts.removeValue(obst, true);
@@ -597,13 +658,13 @@ public class WorldController extends InputAdapter{
 
 	private void onCollisionWithHeart(Heart heart){
 		hearts.removeValue(heart, true);
-		rP.setScore(heart.getScore());
+		rP.incrementScore(heart.getScore());
 		System.out.println("Heart collision");
 	}
 
 	private void onCollisionWithStar(Star star){
 		stars.removeValue(star, true);
-		rP.setScore(star.getScore());
+		rP.incrementScore(star.getScore());
 		System.out.println("Star collision");
 	}
 

@@ -28,7 +28,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonValue.JsonIterator;
 
 public class ScoresScreen extends AbstractGameScreen {
 	
@@ -45,9 +48,10 @@ public class ScoresScreen extends AbstractGameScreen {
 	String url, httpMethod, requestContent = null;
 	
 	//http stuff
-	public JsonValue root;
+	public JsonValue root = null;
 	public String data;
 	public String text;
+	public JsonIterator jIter;
 	
 	private TextButton btnBack;
 	private TextButtonStyle btnStyle;
@@ -117,11 +121,16 @@ public class ScoresScreen extends AbstractGameScreen {
 	
 	
 	private Table buildScoreLayer(){
+		
+		getScore();
+		
 		Table layer = new Table();
 		layer.top();
 		
-		getScores1();
-
+		while(root.iterator().hasNext()){
+			System.out.println(root.next().name);
+		}
+		
 		return layer;
 		
 	}
@@ -130,16 +139,31 @@ public class ScoresScreen extends AbstractGameScreen {
 	
 	/*
 	 * 
-	 * This section below controls the server aspects...there are two getScore() Functions. It is currently
-	 * set up so that it will work when using the Desktop version but I have been unable to test it properly
-	 * on android. For more information please see the docs.
+	 * This section below controls the server aspects...there are two Functions to attempt to get the scores from the db
+	 * 
+	 * getScore and getScore1
+	 * 
+	 * These are called in the Show method below
+	 * 
+	 * It is currently set up so that it is requesting information from the server on the desktop version using the getScore.
+	 * 
+	 * The getScore1 I hoped would have been able to connect with the localhost with the android but I have failed to get it working.
 	 * 
 	 * 
 	 */
 	
 	
 	
-	private void getScores1(){
+	private void getScore1(){
+		
+		
+		/*
+		 *NOT BEING CALLED AT PRESENT
+		 *
+		 *I have a feeling that the error comes from the use of the Score class. Not sure if I have done this right. 
+		 */
+		
+		
 		
 		Score score = new Score();
 		
@@ -152,13 +176,13 @@ public class ScoresScreen extends AbstractGameScreen {
               
             }
         };
-        JsonClient.getInstance().sendPost(score, "?page=getScores", callback, Score.class);
+        JsonClient.getInstance().sendPost(score, "?page=getScore", callback, Score.class);
 	}
 	
 	
 
-	private void getScores(){
-		String url = "http://localhost:8888/?page=getScores";
+	private void getScore(){
+		String url = "http://localhost:8888/?page=getScore";
 		String httpMethod = Net.HttpMethods.GET;
 		httpRequest = new HttpRequest(httpMethod);
 		httpRequest.setHeader("Content-Type", "application/json");
@@ -169,13 +193,10 @@ public class ScoresScreen extends AbstractGameScreen {
 			public void handleHttpResponse(final HttpResponse httpResponse) {
 				final int statusCode = httpResponse.getStatus().getStatusCode();
 				// We are not in main thread right now so we need to post to main thread for ui updates
-				Gdx.app.postRunnable(new Runnable() {
-					@Override
-					public void run () {
-						System.out.println("HTTP Request status: " + statusCode);
-						System.err.println(httpResponse.getResultAsString());						
-					}
-				});
+				String status = httpResponse.getResultAsString();
+				JsonValue data = new JsonReader().parse(status);
+				
+				
 			}
 			
 			@Override
@@ -189,6 +210,9 @@ public class ScoresScreen extends AbstractGameScreen {
 				// TODO Auto-generated method stub
 				
 			}
+			
+		
+		
 		});
 		
 	}
@@ -242,8 +266,8 @@ public class ScoresScreen extends AbstractGameScreen {
 		
 		rebuildStage();
 		
-		//getScores();
-		getScores1();
+		//getScore1();
+		
 	}
 
 	@Override

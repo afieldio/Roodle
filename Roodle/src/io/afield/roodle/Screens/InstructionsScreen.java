@@ -8,7 +8,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -19,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
@@ -30,7 +31,9 @@ public class InstructionsScreen extends AbstractGameScreen {
 	private Label label;
 	private LabelStyle ls;
 	
+	private TextureRegion bgRegion;
 	private Image imgBackground;
+	private Sprite instSprite;
 	
 	private TextButton btnBack;
 	private TextButtonStyle btnStyle;
@@ -54,6 +57,8 @@ public class InstructionsScreen extends AbstractGameScreen {
 	private void rebuildStage(){
 		Gdx.input.setInputProcessor(stage);
 		type = Assets.instance.fonts.type;
+		bgRegion = Assets.instance.instructions.instructions;
+
 		
 		
 
@@ -68,21 +73,34 @@ public class InstructionsScreen extends AbstractGameScreen {
 		ls = new LabelStyle(type, Color.BLACK);
 		ls.font.setScale(1, -1);
 		
-		Table layerLabel = buildLabelLayer();
-		Table layerScores = buildScoresLayer();
+		//Table layerLabel = buildLabelLayer();
+		Table layerBackground = buildBackgroundLayer();
 		Table layerBack = buildBackLayer();
 		
 		stage.clear();
 		Stack stack = new Stack();
 		stack.setWidth(Gdx.graphics.getWidth());
-		stack.add(layerLabel);
-		stack.add(layerScores);
+		stack.setHeight(Gdx.graphics.getHeight());
+		stack.add(layerBackground);
 		stack.add(layerBack);
+		
 		stage.addActor(stack);
 		
 		
 		
 		
+	}
+	
+	private Table buildBackgroundLayer(){
+		
+		Table layer = new Table();
+		
+		
+		imgBackground = new Image(skin, "instructions");
+		
+		layer.add(imgBackground);
+		
+		return layer;
 	}
 	
 	
@@ -97,20 +115,16 @@ public class InstructionsScreen extends AbstractGameScreen {
 		return layer;
 	}
 	
-	private Table buildScoresLayer(){
-		Table layer = new Table();
-		
-		return layer;
-	}
+
 	
 	private Table buildBackLayer(){
 		Table layer = new Table();
-		layer.center();
-		layer.pad( 0, 0, 1.0f, 0);
+		layer.pad( 0, 0, 10.0f, 0);
+		layer.bottom();
 		
 		btnBack = new TextButton("Back", btnStyle);
 		btnBack.setBounds(0, 0, btnBack.getWidth(), btnBack.getHeight());
-		btnBack.center().bottom();		
+			
 		layer.add(btnBack);
 		
 		btnBack.addListener(new ClickListener(){
@@ -132,9 +146,6 @@ public class InstructionsScreen extends AbstractGameScreen {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT );
 
-//		if(Gdx.input.isTouched()){
-//			game.setScreen(new GameScreen(game));
-//		}
 
 		if (debugEnabled) {
 			debugRebuildStage -= deltaTime;

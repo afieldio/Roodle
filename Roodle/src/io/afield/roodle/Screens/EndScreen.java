@@ -69,7 +69,7 @@ public class EndScreen extends AbstractGameScreen implements HttpResponseListene
 	public EndScreen(Game game, int score) {
 		super(game);
 		this.score = score;
-		
+
 		// TODO Auto-generated constructor stub
 	}
 
@@ -93,19 +93,33 @@ public class EndScreen extends AbstractGameScreen implements HttpResponseListene
 		ls = new LabelStyle(type, Color.RED);
 
 		Table layerScore = buildScoreLayer();
-		layerScore.top();
+		Table layerBackground = buildBackgroundLayer();
 		Table layerControl = buildControlLayer();
+
+		layerScore.center();
 
 		stage.clear();
 		Stack stack = new Stack();
 		stack.setWidth(Gdx.graphics.getWidth());
 		stack.setHeight(Gdx.graphics.getHeight());
-		
 
+		stack.add(layerBackground);
 		stack.add(layerScore);
+		
 		stack.add(layerControl);
 		stage.addActor(stack);
 
+	}
+
+	private Table buildBackgroundLayer(){
+
+		Table layer = new Table();
+
+		imgBackground = new Image(skin, "background");
+
+		layer.add(imgBackground);
+
+		return layer;
 	}
 
 
@@ -166,7 +180,7 @@ public class EndScreen extends AbstractGameScreen implements HttpResponseListene
 					public void handleHttpResponse(HttpResponse httpResponse) {
 						String data = httpResponse.getResultAsString();
 						System.out.println("Data is " + data);
-						game.setScreen(new MenuScreen(game));
+						
 					}
 
 					@Override
@@ -181,8 +195,8 @@ public class EndScreen extends AbstractGameScreen implements HttpResponseListene
 
 					}
 				});
-				
-				
+
+				game.setScreen(new MenuScreen(game));
 				super.touchUp(event, x, y, pointer, button);
 			}
 		});

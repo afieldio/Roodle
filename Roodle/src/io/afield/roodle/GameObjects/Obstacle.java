@@ -35,4 +35,8 @@ public class Obstacle extends AbstractGameObject{
 	public int lifeLoss(){
 		return -1;
 	}
+	
+	public int getScore(){
+		return 10;
+	}
 }

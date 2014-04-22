@@ -25,6 +25,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetRoodle roodle;
 	public AssetBullet bullet;
 	public AssetBackground background;
+	public AssetBackground2 background2;
+	public AssetInstructions instructions;
 	public AssetFonts fonts;
 	public AssetButtonUp buttonUp;
 	public AssetButtonDown buttonDown;
@@ -54,12 +56,14 @@ public class Assets implements Disposable, AssetErrorListener {
 		roodle = new AssetRoodle(atlas);
 		bullet = new AssetBullet(atlas);
 		background = new AssetBackground(atlas);
+		background2 = new AssetBackground2(atlas);
 		fonts = new AssetFonts();
 		buttonUp = new AssetButtonUp(atlas);
 		buttonDown = new AssetButtonDown(atlas);
 		heart = new AssetHeart(atlas);
 		obstacle = new AssetObstacle(atlas);
 		star = new AssetStar(atlas);
+		instructions = new AssetInstructions(atlas);
 	}
 
 	@Override
@@ -89,6 +93,13 @@ public class Assets implements Disposable, AssetErrorListener {
 		}
 	}
 
+	public class AssetInstructions{
+		public final AtlasRegion instructions;
+
+		public AssetInstructions (TextureAtlas atlas){
+			instructions = atlas.findRegion("instructions");
+		}
+	}
 	public class AssetBullet{
 		public final AtlasRegion bullet;
 
@@ -143,6 +154,14 @@ public class Assets implements Disposable, AssetErrorListener {
 		
 		public AssetStar (TextureAtlas atlas){
 			star = atlas.findRegion("star");
+		}
+	}
+	
+	public class AssetBackground2{
+		public final AtlasRegion background2;
+
+		public AssetBackground2 (TextureAtlas atlas){
+			background2 = atlas.findRegion("background2");
 		}
 	}
 	

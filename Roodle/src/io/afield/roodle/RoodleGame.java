@@ -1,7 +1,7 @@
 package io.afield.roodle;
 
 import io.afield.roodle.Assets.Assets;
-import io.afield.roodle.Screens.MenuScreen;
+import io.afield.roodle.Screens.GameScreen;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
@@ -16,8 +16,35 @@ public class RoodleGame extends Game {
 	public void create() {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		Assets.instance.init(new AssetManager());
-		setScreen(new MenuScreen(this));
+		setScreen(new GameScreen(this));
 		
+	}
+	
+	@Override
+	public void dispose() {
+		Assets.instance.dispose();
+		super.dispose();
+	}
+
+	@Override
+	public void render() {		
+		super.render();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+	}
+
+	@Override
+	public void pause() {
+		super.pause();
+	}
+
+	@Override
+	public void resume() {
+		Assets.instance.init(new AssetManager());
+		super.resume();
 	}
 	
 

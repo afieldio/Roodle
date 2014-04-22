@@ -65,7 +65,7 @@ public class MenuScreen extends AbstractGameScreen {
 		
 		
 		//create layers
-		//Table layerBackground = buildBackgroundLayer();
+		Table layerBackground = buildBackgroundLayer();
 		Table layerControls = buildControlsLayer();
 
 		//assemble stage
@@ -74,7 +74,7 @@ public class MenuScreen extends AbstractGameScreen {
 		stack.setWidth(Gdx.graphics.getWidth());
 		stack.setHeight(Gdx.graphics.getHeight());
 		stack.setOrigin(0.0f, 0.0f);
-		//stack.add(layerBackground);
+		stack.add(layerBackground);
 		stack.add(layerControls);
 		
 		
@@ -89,7 +89,6 @@ public class MenuScreen extends AbstractGameScreen {
 	private Table buildBackgroundLayer () {
 		Table layer = new Table();
 		imgBackground = new Image(skin, "background");
-		imgBackground.setFillParent(true);
 		
 		layer.add(imgBackground);
 		return layer;
@@ -125,8 +124,8 @@ public class MenuScreen extends AbstractGameScreen {
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
-				System.out.println("Play");
-				game.setScreen(new GameScreen(game));
+				//System.out.println("Play");
+				onPlayClicked();
 				super.touchUp(event, x, y, pointer, button);
 			}
 			
@@ -137,8 +136,8 @@ public class MenuScreen extends AbstractGameScreen {
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
-				System.out.println("Score");
-				game.setScreen(new ScoresScreen(game));
+				//System.out.println("Score");
+				onScoresClicked();
 				super.touchUp(event, x, y, pointer, button);
 			}
 			
@@ -149,8 +148,8 @@ public class MenuScreen extends AbstractGameScreen {
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
-				System.out.println("Instructions");
-				game.setScreen(new InstructionsScreen(game));
+				//System.out.println("Instructions");
+				onInstructionsClicked();
 				super.touchUp(event, x, y, pointer, button);
 			}
 			
@@ -188,16 +187,19 @@ public class MenuScreen extends AbstractGameScreen {
 				rebuildStage();
 			}
 		}
+		if(stage == null){
+			stage = new Stage();
+		}
 		stage.act(deltaTime);
 		stage.draw();
 		
-		Table.drawDebug(stage);
+//		Table.drawDebug(stage);
 
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		//stage.getViewport().update(width, height, true);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override
